@@ -1,0 +1,199 @@
+Program entry point:
+The entry point of the program is the file passed to the interpreter (the "executed file").
+A program is a sequence of top-level declarations and statements.
+Top-level statements are executed from top to bottom when the program starts.
+The interpreter:
+
+1. loads that file,
+2. processes its import statements,
+3. and executes its top-level statements from top to bottom.
+
+Comments: 
+    // this is a Comment
+    var number a = 5 // this is also ok as a comment
+
+Statements:
+    A statement ends at end-of-line (EOL) or at ;
+    
+    for example:
+        var number a = 5
+        var string b = "abc"
+    'var number a = 5' is a statement and 'var string b = "abc"' is a statement
+
+    Also:
+        var number a = 5; var string b = "abc";
+    Also in this case both 'var number a = 5' and 'var string b = "abc"' are statements
+
+Basic types:
+    -number
+        number literals are decimal numbers with 
+        optional fractional part, e.g. 0, 42, 3.14.
+        The - sign is treated as the unary minus operator.
+    
+    -string
+        allowed delimiter is "
+        Backslash escape sequences are supported:
+            \", \\, \n, \t
+        A string literal cannot span multiple lines.
+    
+    -bool    
+        Boolean literals are 'true' and 'false' (lowercase)
+
+Constants:
+    // Constants cannot be re-assigned
+    const number pi = 3.14 //this is a number constant
+
+Variables:
+
+    // Variables have a block scope, 
+    // A variable declared in an outer 
+    //   block is visible in all its inner blocks.
+    // A variable declared in an inner block is not 
+    //   visible outside that block.
+    // It is a compile-time error to declare a variable 
+    //    with name x in a block if x is already declared 
+    //    in any enclosing block.
+    // A variable can not be redefined in an internal scope
+    
+    //Using a variable before its declaration is a compile-time error.
+    
+    example:
+        var number a = 1
+        {
+            var number b = 2
+            // here: a is visible, b is visible
+        }
+        echo(a)      // OK
+        echo(b)      // ERROR: b not visible
+
+    // NB: each uninitialized variable assumes its default value for each data-type
+    // example: var number k; // k assumes value 0
+                var string s; // s assumes value "" (empty string)
+                var bool b;   // b assumes value false
+    -Declarations:
+        var number a
+        var string b = "abcde" //this is a string variable
+
+    Assignment
+        a = 2 //numeric variable a now has value 2
+
+Expressions:
+    - Arithmetic
+        + - * / % ^
+    - Compare
+        == != < <= > >=
+    - Logic
+        and or not 
+    
+    Operators precedence:
+        ^ (right-associative), -(unary)
+        #
+        not(unary)
+        * / %
+        + -
+        < <= > >=
+        == !=
+        and
+        or
+
+    All binary operators, except ^, are left-associative.
+    The ^ operator is right-associative.
+    Unary operators (-(unary), not) are prefix.
+
+        Operators allowed types: 
+            and, not, or    -> bool
+            ^ * / + - %     -> number
+            < <= > >=       -> number, string
+            == !=           -> number, string, bool 
+            #               -> strings
+
+        String comparisons (<, <=, >, >=) use lexicographical, case-sensitive order.
+        comparisons can be made only between operands having the same data type
+
+    Examples and types of expressions:
+        1 + 2 / 2    // this is an arithmetic expression
+        a + 2        // this is an arithmetic expression
+        true and false // this is a boolean expression
+        1 < 2          // this is a boolean expression
+        "string here"  // this is an expression
+        "abdde" + 1    // this is not a valid expression
+
+Flow control:
+    // NB: in flow operations expressions
+    //     must always be boolean expressions
+
+    if ( expression ) {
+        ...
+    } else if ( expression ){
+        ...
+    } else {
+        ...
+    }
+
+    loop( expression ){
+        ...
+    }
+    // loop executes the block while expression is evaluated as true
+
+Functions:
+
+    Functions can only be declared at top level (not inside blocks or other functions)
+
+    func add(number a, number b){
+        return a+b;
+    }
+
+    func noreturn(number c, number d){
+        echo (c)
+        echo (d)
+    }
+
+    A function that does not execute a return statement does not return a value.
+    Using the result of a function that does not return a value in an expression is a compile-time error.
+
+    -Function call:
+    var number sum = add(1, 5)
+    noreturn(3, 4) 
+
+Imports:
+    import "file.spl"
+
+    Interpreter reads and interprets the file 
+    as if it was pasted at that position
+
+    Each file is imported at most once.
+    
+Built in:
+    exit(code: number)
+    
+    echo(expr)
+        //NB: internally it always makes string(expr) before printing
+
+    strlen(s: string) -> number returns the length of the string s.
+
+    # this is the string concatenation operator
+        example: a = "abc" # "def"
+                 echo (a) //prints abcdef
+    NB: "abcde" # 5 is not allowed. You must cast the number to string before concatenation.
+        Example: "abcde" # string(5).
+
+    Casting:
+        Any type mismatch or casting/parsing error is a runtime error and aborts program execution.
+        
+        string()
+            examples:
+                string(1); string(true) //are all valid 
+        number() 
+            examples:
+                number("12.3") //is valid
+                const pi = "3.14"; number(pi) //is valid
+                number("sdajdash") //number parsing error
+        bool()  
+            bool(x: string) expects a string equal to "true" or "false" (case-insensitive).
+            If the string is not "true"/"false", it causes a boolean parsing error.
+            Calling bool() with a non-string argument is a type error.
+            examples:
+                bool("True"); bool("False"); bool("true");
+                bool("abcde") //boolean parsing error
+                bool(0);      //type error
+                bool(1);      //type error
