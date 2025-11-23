@@ -57,3 +57,12 @@ class TokenType(Enum):
 
     # Special
     EOF       = auto()
+
+class Token():
+    def __init__(self, token_type, token_value, token_literal, token_line, token_column, token_file):
+        self.type = token_type #TokenType
+        self.value = token_value #Token actual value (source code substring)
+        self.literal = token_literal #Token value converted to a python type, only for tokens rapresenting a value(literal)
+        self.line = token_line #Line where token appears
+        self.column = token_column #Column where token appeares
+        self.file = token_file #File where the token appeares
